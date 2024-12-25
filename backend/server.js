@@ -1,6 +1,9 @@
 const express = require("express");
 const products = require("./data/products").default;
 const dotenv = require("dotenv").config();
+const connectDB = require("./config/db");
+
+connectDB(); // connect to the database
 
 const port = process.env.PORT || 5000;
 
