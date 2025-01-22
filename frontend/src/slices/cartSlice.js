@@ -11,10 +11,30 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      return updateCart(state, item);
+
+      const existItem = state.cartItems.find((x) => x._id === item._id);
+
+      if (existItem) {
+        // If exists, update quantity
+        state.cartItems = state.cartItems.map((x) =>
+          x._id === existItem._id ? item : x
+        );
+      } else {
+        // If not exists, add new item to cartItems
+        state.cartItems = [...state.cartItems, item];
+      }
+
+      return updateCart(state);
+    },
+    removeFromCart: (state, action) => {
+      // Filter out the item to remove from the cart
+      state.cartItems = state.cartItems.filter((x) => x._id !== action.payload);
+
+      // Update the prices and save to storage
+      return updateCart(state);
     },
   },
 });
 
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, removeFromCart } = cartSlice.actions;
 export default cartSlice.reducer;
