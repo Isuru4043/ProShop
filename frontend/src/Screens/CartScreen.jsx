@@ -24,6 +24,10 @@ const CartScreen = () => {
     dispatch(addToCart({ ...product, qty }));
   };
 
+  const checkoutHandler = () => {
+    navigate("/login?redirect=/shipping");
+  };
+
   const removeFromCartHandler = (id) => {
     dispatch(removeFromCart(id));
   };
@@ -96,6 +100,7 @@ const CartScreen = () => {
                 type="button"
                 className="btn-block"
                 disabled={cartItems.length === 0}
+                onClick={checkoutHandler}
               >
                 Proceed To Checkout
               </Button>
