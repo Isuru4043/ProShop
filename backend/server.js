@@ -21,12 +21,12 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/products", productRoutes);
-
+console.log("user-0101");
 app.use("/api/users", userRoutes);
 
 app.use("/api/orders", orderRoutes);
 app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
 );
-
+console.log("user-0102");
 app.listen(port, () => console.log(`Server running on port ${port}`));
