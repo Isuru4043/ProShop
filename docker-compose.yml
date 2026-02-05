@@ -1,19 +1,13 @@
 services:
-  mongo:
-    image: mongo
-    container_name: mongo_container
-    ports:
-      - "27017:27017"
-
   server:
-    build: .
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
     container_name: server_container
     ports:
       - "8000:8000"
-    depends_on:
-      - mongo
     environment:
-      - MONGO_URI=mongodb://mongo:27017/ProShop
+      - MONGO_URI=mongodb+srv://Isuru4043:Akalanka1999@cluster0.wb9vc.mongodb.net/ProShop?retryWrites=true&w=majority&appName=cluster0
 
   client:
     build: ./frontend
