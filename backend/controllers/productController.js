@@ -1,5 +1,6 @@
-const asyncHandler = require("../middleware/asyncHandler");
-const Product = require("../models/productModel");
+import asyncHandler from "../middleware/asyncHandler.js";
+import Product from "../models/productModel.js";
+
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
@@ -84,4 +85,4 @@ const getTopProducts = asyncHandler(async (req, res) => {
   res.json(products);
 });
 
-module.exports = { getProducts, getproductById, createProduct, updateProduct, getTopProducts };
+export { getProducts, getproductById, createProduct, updateProduct, getTopProducts };

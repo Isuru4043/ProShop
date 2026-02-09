@@ -1,6 +1,7 @@
-const mongoose = require("mongoose");
-const bycrypt = require("bcryptjs");
-const userSchema = new mongoose.Schema(
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+
+const userSchema = mongoose.Schema(
   {
     name: {
       type: String,
@@ -26,18 +27,21 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Match user entered password to hashed password in database
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bycrypt.compare(enteredPassword, this.password);
+  return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+// Encrypt password using bcrypt
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     next();
   }
-  const salt = await bycrypt.genSalt(10);
-  this.password = await bycrypt.hash(this.password, salt);
+
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model('User', userSchema);
 
-module.exports = User;
+export default User;
