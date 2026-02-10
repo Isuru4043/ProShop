@@ -12,7 +12,7 @@ import {
   deleteUser,
   getUserById,
   updateUser,
-} from "../controllers/usercontroller.js";
+} from "../controllers/userController.js";
 
 router.route("/").post(registerUser).get(protect, admin, getUsers);
 router.post("/auth", authUser);
