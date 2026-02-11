@@ -2,6 +2,7 @@ import dns from 'dns';
 dns.setServers(['8.8.8.8', '1.1.1.1']); // Use Google & Cloudflare DNS for SRV lookups
 
 import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -15,6 +16,8 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 const port = process.env.PORT || 5000;
 const host = '0.0.0.0';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 connectDB();
 
@@ -34,16 +37,19 @@ app.get('/api/config/paypal', (req, res) =>
 );
 
 if (process.env.NODE_ENV === 'production') {
-  const __dirname = path.resolve();
-  app.use('/uploads', express.static('/var/data/uploads'));
-  app.use(express.static(path.join(__dirname, '/frontend/build')));
+  // Build directory copied into the image by Docker multi-stage build
+  const frontendBuildPath = path.resolve(__dirname, '../frontend/build');
 
-  app.get('*', (req, res) =>
-    res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+  app.use('/uploads', express.static('/var/data/uploads'));
+  // Serve compiled React assets (e.g. /static/js/main.js)
+  app.use(express.static(frontendBuildPath));
+
+  // For React Router: any non-API GET route should return index.html
+  app.get(/^\/(?!api).*/, (req, res) =>
+    res.sendFile(path.join(frontendBuildPath, 'index.html'))
   );
 } else {
-  const __dirname = path.resolve();
-  app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+  app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
   app.get('/', (req, res) => {
     res.send('API is running....');
   });
